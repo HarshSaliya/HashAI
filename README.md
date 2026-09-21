@@ -20,25 +20,3 @@ Replace the passive portfolio page with something interactive: a chat widget tha
 4. **Retrieve** — the question is embedded and matched against stored chunks via similarity search
 5. **Generate** — matched chunks + question are passed to an LLM to produce a grounded answer
 6. **Respond** — answer is returned to the portfolio site's chat widget
-
-## Project layout
-
-```
-HashAi/
-├── main.py          # entrypoint (WIP — currently text-splitting experiments)
-├── media/           # source content: resume/portfolio text used for ingestion
-├── requirement.txt  # dependencies (currently empty — see Setup)
-└── .vscode/         # pinned interpreter settings for this project's venv
-```
-
-## Setup
-
-Uses a dedicated venv at `../virtual env/hashvenv` (kept outside the repo).
-
-```bash
-"/home/harsh-saliya/python project/virtual env/hashvenv/bin/python" -m pip install -r requirement.txt
-```
-
-## Status
-
-Early stage — currently wiring up the text-splitting step of the ingestion pipeline. FastAPI service, embedding pipeline, and PGVector integration not yet implemented.
