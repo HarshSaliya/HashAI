@@ -1,0 +1,5 @@
+langchain-text-splitters
+pdfplumber
+load_dotenv=0.1.0
+python-dotenv=3.3.6
+langchain-huggingface
