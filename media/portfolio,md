@@ -1,0 +1,4 @@
+Harsh SaliyaSoftware Engineer — Backend & Retrieval SystemsAboutBackend is where I do my best thinking.
+I'm a Software Engineer with 2 years building backend systems inDjango, PostgreSQL and AWS Lambda.
+ I design the data model, the API surface and the pipeline that feedsthem, then tune the whole thing until it holds up under real load.Lately that's extended into retrieval. I build RAG pipelines on Qdrant and pgvector that route a plain-Englishquestion to either vector search or generated SQL — so PDFs and spreadsheets can answer for themselves.My day job is fintech: REST APIs for lending and transaction workflows, ETL pipelines on AWS Glue, 
+invoiceand revenue automation, and PostgreSQL queries tuned with indexing and join strategy until slow endpointsrun 80–90% faster.

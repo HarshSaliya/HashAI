@@ -1,0 +1,33 @@
+# Virtualenv (lives outside the repo, but ignore defensively)
+hashvenv/
+venv/
+.venv/
+env/
+
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Environment / secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Vector store / local DB data (if run locally instead of a hosted PGVector)
+*.sqlite3
+pgdata/
