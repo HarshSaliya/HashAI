@@ -1,6 +1,8 @@
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import pdfplumber
 
+from langchain_huggingface import HuggingFaceEmbeddings
+
 file_path = "/home/harsh-saliya/python project/HashAi/media/Harsh_Saliya_Portfolio.pdf"
 
 with pdfplumber.open(file_path) as pdf:
@@ -70,4 +72,9 @@ text_splilter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
 
 chunks = text_splilter.split_text(text)
 
-print(chunks)
+print("RES ::::",chunks)
+embedding = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
+
+data = embedding.embed_documents(chunks)
+
+print("AFTER EMBEDIING ::: ------------->", data)
