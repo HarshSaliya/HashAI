@@ -1,0 +1,6 @@
+langchain-text-splitters
+langchain-huggingface
+pdfplumber
+psycopg[binary]
+pgvector
+python-dotenv
