@@ -1,7 +1,15 @@
+import os
+
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 import pdfplumber
 
-from langchain_huggingface import HuggingFaceEmbeddings
+from sentence_transformers import SentenceTransformer
+import psycopg
+from dotenv import load_dotenv
+from pgvector.psycopg import register_vector
+# from pgvector import Pg
+
+load_dotenv()
 
 file_path = "/home/harsh-saliya/python project/HashAi/media/Harsh_Saliya_Portfolio.pdf"
 
@@ -68,13 +76,51 @@ Bachelor of Computer Applications (BCA) — Gujarat University, Ahmedabad
 2020 – 2023
 []"""
 
-text_splilter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
+text = text.replace("(cid:127)", "-").replace("\n[]", "")
 
-chunks = text_splilter.split_text(text)
+# text_splilter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
 
-print("RES ::::",chunks)
-embedding = HuggingFaceEmbeddings(model_name="BAAI/bge-m3")
+# chunks = text_splilter.split_text(text)
 
-data = embedding.embed_documents(chunks)
+# print("RES ::::",chunks)
+model = SentenceTransformer("BAAI/bge-m3")
 
-print("AFTER EMBEDIING ::: ------------->", data)
+
+vec = model.encode("Hii what this ?")
+print(vec)
+
+# data = embedding.embed_documents(chunks)
+
+# print("AFTER EMBEDIING ::: ------------->", len(data), "vectors of", len(data[0]))
+
+
+# with psycopg.connect(os.getenv("DATABASE_URL")) as conn:
+#     register_vector(conn)
+
+#     conn.execute("DELETE FROM resume_chunks")
+
+#     with conn.cursor() as cur:
+#         cur.executemany(
+#             "INSERT INTO resume_chunks (content, embedding) VALUES (%s, %s)",
+#             list(zip(chunks, data)),
+#         )
+
+#     count = conn.execute("SELECT count(*) FROM resume_chunks").fetchone()[0]
+
+# print("SAVED ::: rows in table =", count)
+
+
+# with psycopg.connect(os.getenv("DATABASE_URL")) as conn:
+#     # register_vector(register_vector)
+    
+#     result = conn.execute("SELECT * from resume_chunks;").fetchone()
+    
+
+# print("RES:::", result)pip install sentence-transformers
+
+# query_fetch = SentenceTransformer(model_name="BAAI/bge-m3")
+# vec = query_fetch.embed_query("what the designation ?")
+# print(vec)
+# query = ("what the designation ?")
+
+# result = query_fetch.similarity_search()
