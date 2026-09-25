@@ -1,8 +1,8 @@
 from sentence_transformers import SentenceTransformer
-from dotenv import load_dotenv
 from pgvector.psycopg import register_vector
-import os
-import psycopg
+
+from db import DB
+
 # 1. Load a pretrained Sentence Transformer model
 model = SentenceTransformer("BAAI/bge-m3")
 
@@ -17,18 +17,22 @@ sentences = [
 embeddings = model.encode(sentences)
 print(embeddings.shape)
 
+db = DB()
 
-with psycopg.connect(os.getenv("DATABASE_URL")) as conn:
-    register_vector(conn)
+result = db.fetchone(query="SELECT content from resume_chunks;")
+print(result)
 
-    conn.execute("DELETE FROM resume_chunks")
 
-    with conn.cursor() as cur:
-        cur.executemany(
-            "INSERT INTO resume_chunks (content, embedding) VALUES (%s, %s)",
-            list(zip(chunks, data)),
-        )
+qvec = model.encode("Does he know Django?")
 
-    count = conn.execute("SELECT count(*) FROM resume_chunks").fetchone()[0]
+print("query return ans:::",qvec)
 
-print("SAVED ::: rows in table =", count)
+rows = db.fetchall(
+    """SELECT content, embedding <=> %s AS distance
+       FROM resume_chunks
+       ORDER BY embedding <=> %s
+       LIMIT 3""",
+    (qvec, qvec),
+)
+
+print("************", rows)
