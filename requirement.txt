@@ -4,3 +4,4 @@ pdfplumber
 psycopg[binary]
 pgvector
 python-dotenv
+groq
