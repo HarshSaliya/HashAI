@@ -15,6 +15,7 @@ __pycache__/
 # Environment / secrets
 .env
 .env.*
+!.env.template
 *.pem
 *.key
 
