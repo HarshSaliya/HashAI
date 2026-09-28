@@ -1,16 +1,13 @@
-import os
-
 import psycopg
-from dotenv import load_dotenv
 from pgvector.psycopg import register_vector
 from psycopg.rows import dict_row
 
-load_dotenv()
+from app.config import DB_CONN
 
 
 class DB:
     def __init__(self):
-        self.conn_str = os.getenv("DATABASE_URL")
+        self.conn_str = DB_CONN
 
     def _connect(self):
         conn = psycopg.connect(self.conn_str)
