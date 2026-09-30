@@ -11,8 +11,8 @@ SYSTEM_PROMPT = (
 
 
 class Llm:
-    def __init__(self, client, model):
-        self.client = client
+    def __init__(self, model=GROQ_MODEL):
+        self.client = Groq(api_key=GROQ_API)
         self.model = model
 
     def generate(self, context, question):
@@ -28,11 +28,8 @@ class Llm:
         return answer
 
 
-client = Groq(api_key=GROQ_API)
-
-
 if __name__ == "__main__":
-    ai = Llm(client=client, model=GROQ_MODEL)
+    ai = Llm()
     print(ai.generate(
         context="Databases: PostgreSQL, MongoDB, SQLite3, Qdrant, pgvector",
         question="How many databases does he know?",
