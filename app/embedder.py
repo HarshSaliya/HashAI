@@ -1,14 +1,13 @@
 from sentence_transformers import SentenceTransformer
 
+from app.config import EMBED_MODEL, TABLE_NAME
 from app.db import DB
 
-EMBED_MODEL = "BAAI/bge-m3"
-
 # <=> is cosine distance, lower means closer in meaning
-SEARCH_SQL = """SELECT content, embedding <=> %s AS distance
-                FROM resume_chunks
-                ORDER BY embedding <=> %s
-                LIMIT %s"""
+SEARCH_SQL = f"""SELECT content, embedding <=> %s AS distance
+                 FROM {TABLE_NAME}
+                 ORDER BY embedding <=> %s
+                 LIMIT %s"""
 
 
 class Embedder:
