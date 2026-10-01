@@ -4,6 +4,7 @@ from pathlib import Path
 import pdfplumber
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
+from app.config import TABLE_NAME
 from app.db import DB
 from app.embedder import Embedder
 
@@ -54,18 +55,18 @@ def main():
     print(f"embedded {len(vectors)} vectors of {len(vectors[0])} dimensions")
 
     db = DB()
-    removed = db.delete("DELETE FROM resume_chunks")
+    removed = db.delete(f"DELETE FROM {TABLE_NAME}")
     written = db.insert(
-        "INSERT INTO resume_chunks (content, embedding) VALUES (%s, %s)",
+        f"INSERT INTO {TABLE_NAME} (content, embedding) VALUES (%s, %s)",
         list(zip(chunks, vectors)),
     )
     print(f"removed {removed} old rows, wrote {written} new rows")
 
-    total = db.fetchone("SELECT count(*) AS n FROM resume_chunks")["n"]
+    total = db.fetchone(f"SELECT count(*) AS n FROM {TABLE_NAME}")["n"]
     if total != len(chunks):
         sys.exit(f"expected {len(chunks)} rows, found {total}")
 
-    print(f"done: {total} rows in resume_chunks")
+    print(f"done: {total} rows in {TABLE_NAME}")
 
 
 if __name__ == "__main__":

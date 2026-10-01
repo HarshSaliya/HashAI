@@ -1,8 +1,6 @@
 from groq import Groq
 
-from app.config import GROQ_API
-
-GROQ_MODEL = "openai/gpt-oss-120b"
+from app.config import GROQ_API, GROQ_MODEL
 
 SYSTEM_PROMPT = (
     "Answer only from the context given. "
