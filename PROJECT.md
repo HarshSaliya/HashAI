@@ -47,13 +47,30 @@ Embeddings local, LLM remote. Embeddings run on every ingest and every question,
 
 ## Left to do
 
-- No `source` column, so ingest does `DELETE FROM resume_chunks` on the whole table. Adding a second document would wipe the first.
-- Delete and insert run on separate connections, so if the insert fails after the delete commits, the table is left empty.
+- Delete and insert run on separate connections, so if the insert fails after the delete commits, the table is left empty. Low risk since the script is run by hand and watched.
 - `updated_at` column exists but nothing sets it.
 - Re-embeds everything on every run even if nothing changed.
 - No HNSW index. Fine at 6 rows, needed once it grows.
 - No rate limiting on the API.
+- No conversation memory. The UI shows chat history but each question is sent on its own, so follow-ups like "what about AWS?" have no reference to resolve.
+
+## Version 2 - someday, not now
+
+Right now this is single tenant. One resume, one table, ingested by hand.
+
+The idea for v2 is auth and multi-tenancy: anyone signs up, uploads their own
+resume, and gets a link to their own chatbot. Same bot, their content.
+
+That turns a few shortcuts into real work:
+
+- Auth and a users table.
+- `user_id` on the chunks, and every search filtered by it. Right now the search has no `WHERE` at all because there is only one person's data in there.
+- Upload as an API endpoint instead of a script.
+- The ingest `DELETE` scoped per user. Today it clears the whole table.
+- A per-user link, so each person gets their own chat page.
+
+Not building this yet. v1 is for my own portfolio, and multi-tenancy would be building for users who do not exist.
 
 ## Status
 
-Ingest, embedding, storage, search and generation all work. API works. Left: Streamlit UI, then deploy.
+Ingest, embedding, storage, search, generation, API, UI and tests all work. Left: deploy.

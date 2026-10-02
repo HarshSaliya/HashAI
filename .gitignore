@@ -23,6 +23,9 @@ __pycache__/
 .vscode/
 .idea/
 
+# Personal notes, not for the repo
+interview-notes.md
+
 # OS
 .DS_Store
 

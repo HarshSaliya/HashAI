@@ -16,6 +16,7 @@ class Llm:
     def generate(self, context, question):
         response = self.client.chat.completions.create(
             model=self.model,
+            temperature=0,
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"},
