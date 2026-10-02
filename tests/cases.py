@@ -33,4 +33,12 @@ REFUSAL_PHRASES = [
     "not mentioned",
     "not provided",
     "not specified",
+    "not stated",
+    "not included",
+    "does not mention",
+    "doesn't mention",
+    "no mention",
+    "unable to",
+    "cannot answer",
+    "can't answer",
 ]

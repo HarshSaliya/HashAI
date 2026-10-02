@@ -1,19 +1,18 @@
 # HashAi
 
-RAG chatbot for my portfolio site. Instead of a static About page, recruiters can just ask — "does he know AWS Lambda?", "what databases has he used?" — and get answers from my actual resume.
+RAG chatbot for my portfolio site. Instead of a static About page, recruiters can just ask - "does he know AWS Lambda?", "what databases has he used?" - and get answers from my resume.
 
-Answers come only from the resume. If something is not there, it says it doesn't know instead of making things up.
+Answers come only from the resume. If something is not in it, the bot says it doesn't know instead of making things up.
 
 ## Stack
 
 - pdfplumber - read the PDF
 - langchain-text-splitters - chunking
-- sentence-transformers, BAAI/bge-m3 - embeddings, runs locally
+- sentence-transformers - embeddings, runs locally
 - Neon Postgres + pgvector - vector storage
 - Groq - answer generation
 - FastAPI - the API
-
-## Flow
+- Streamlit - the chat UI
 
 ```
 resume.pdf -> chunks -> embeddings -> postgres
@@ -21,7 +20,7 @@ resume.pdf -> chunks -> embeddings -> postgres
 question -> embedding -> cosine search -> chunks + question -> llm -> answer
 ```
 
-Embeddings run on my machine so there is no API cost for them. Only the final answer call goes out.
+See PROJECT.md for how it works and why it is built this way.
 
 ## Setup
 
@@ -31,14 +30,11 @@ source .venv/bin/activate
 pip install -r requirement.txt
 ```
 
-Copy `.env.template` to `.env` and fill in:
+Copy `.env.template` to `.env` and fill in `DATABASE_URL` (Neon, needs `?sslmode=require`) and `GROQ_API_KEY`.
 
-- `DATABASE_URL` - Neon connection string, needs `?sslmode=require`
-- `GROQ_API_KEY` - from console.groq.com/keys
+Run `schema.sql` on the database once.
 
-Run `schema.sql` on the database once. It enables pgvector and creates the table.
-
-## Usage
+## Running it
 
 Load the resume into the database:
 
@@ -52,7 +48,34 @@ Start the API:
 uvicorn app.api:app --reload
 ```
 
-Open `localhost:8000/docs` to try it.
+Start the UI in another terminal:
+
+```bash
+streamlit run ui.py
+```
+
+`localhost:8501` for the chat, `localhost:8000/docs` for the API.
+
+## Two setups
+
+The embedding model decides the vector column width, so the model and table go together.
+
+| | model | dimensions | table |
+|---|---|---|---|
+| local | BAAI/bge-m3 | 1024 | `resume_chunks` |
+| deploy | all-MiniLM-L6-v2 | 384 | `resume_chunks_mini` |
+
+bge-m3 needs ~2GB RAM, MiniLM fits a 512MB free tier. Switch with env vars:
+
+```bash
+EMBED_MODEL=sentence-transformers/all-MiniLM-L6-v2 TABLE_NAME=resume_chunks_mini uvicorn app.api:app
+```
+
+## Tests
+
+```bash
+pytest
+```
 
 ## Layout
 
@@ -63,15 +86,11 @@ app/
   db.py         psycopg wrapper
   embedder.py   model + vector search
   llm.py        groq
+  logger.py     logging setup
   models.py     request schemas
 scripts/
   resume_to_db.py
-media/          the resume pdf
+tests/
+ui.py           streamlit chat
 schema.sql
 ```
-
-## Notes
-
-The `vector(1024)` column is tied to bge-m3. Switching the embedding model means a different dimension, so the table has to be recreated and everything re-embedded.
-
-Re-running the ingest script clears the table first, so updating the resume just works. It also means a second document would wipe the first one - see PROJECT.md.
