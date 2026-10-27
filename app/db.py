@@ -46,3 +46,16 @@ class DB:
             with conn.cursor() as cur:
                 cur.execute(query, params)
                 return cur.rowcount
+
+    def run_transaction(self, statements: list) -> list:
+        """statements: list of (query, params) run on one connection, one commit."""
+        with self._connect() as conn:
+            with conn.cursor() as cur:
+                counts = []
+                for query, params in statements:
+                    if isinstance(params, list):
+                        cur.executemany(query, params)
+                    else:
+                        cur.execute(query, params)
+                    counts.append(cur.rowcount)
+                return counts

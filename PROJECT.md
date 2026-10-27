@@ -47,11 +47,8 @@ Embeddings local, LLM remote. Embeddings run on every ingest and every question,
 
 ## Left to do
 
-- Delete and insert run on separate connections, so if the insert fails after the delete commits, the table is left empty. Low risk since the script is run by hand and watched.
-- `updated_at` column exists but nothing sets it.
 - Re-embeds everything on every run even if nothing changed.
 - No HNSW index. Fine at 6 rows, needed once it grows.
-- No rate limiting on the API.
 - No conversation memory. The UI shows chat history but each question is sent on its own, so follow-ups like "what about AWS?" have no reference to resolve.
 
 ## Version 2 - someday, not now
