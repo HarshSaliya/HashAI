@@ -1,18 +1,15 @@
-import psycopg
 from pgvector.psycopg import register_vector
 from psycopg.rows import dict_row
+from psycopg_pool import ConnectionPool
 
 from app.config import DB_CONN
 
+pool = ConnectionPool(conninfo=DB_CONN, min_size=1, max_size=5, configure=register_vector, open=True)
+
 
 class DB:
-    def __init__(self):
-        self.conn_str = DB_CONN
-
     def _connect(self):
-        conn = psycopg.connect(self.conn_str)
-        register_vector(conn)
-        return conn
+        return pool.connection()
 
     def fetchone(self, query: str, params: tuple = None) -> dict:
         with self._connect() as conn:

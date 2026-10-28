@@ -13,14 +13,17 @@ class Llm:
         self.client = Groq(api_key=GROQ_API)
         self.model = model
 
-    def generate(self, context, question):
+    def generate(self, context, question, history=None):
+        messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+        for turn in history or []:
+            messages.append({"role": "user", "content": turn["question"]})
+            messages.append({"role": "assistant", "content": turn["answer"]})
+        messages.append({"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"})
+
         response = self.client.chat.completions.create(
             model=self.model,
             temperature=0,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": f"Context:\n{context}\n\nQuestion: {question}"},
-            ],
+            messages=messages,
         )
 
         answer = response.choices[0].message.content

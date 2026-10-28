@@ -15,3 +15,13 @@ CREATE TABLE IF NOT EXISTS resume_chunks_mini (
     embedding  vector(384) NOT NULL,
     created_at timestamptz DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS chat_messages (
+    id         bigserial PRIMARY KEY,
+    session_id uuid NOT NULL,
+    question   text NOT NULL,
+    answer     text NOT NULL,
+    created_at timestamptz DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_chat_messages_session ON chat_messages (session_id, created_at);
