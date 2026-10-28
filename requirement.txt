@@ -2,6 +2,7 @@ langchain-text-splitters
 langchain-huggingface
 pdfplumber
 psycopg[binary]
+psycopg-pool
 pgvector
 python-dotenv
 groq

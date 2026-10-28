@@ -1,4 +1,5 @@
 import os
+import uuid
 
 import requests
 import streamlit as st
@@ -21,11 +22,17 @@ st.caption("Ask anything about Harsh Saliya. Answers come from his resume only."
 
 if "history" not in st.session_state:
     st.session_state.history = []
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 
 
 def fetch_answer(question):
     try:
-        res = requests.post(f"{API_URL}/ask", json={"question": question}, timeout=60)
+        res = requests.post(
+            f"{API_URL}/ask",
+            json={"question": question, "session_id": st.session_state.session_id},
+            timeout=60,
+        )
         res.raise_for_status()
         return res.json()["answer"]
     except requests.exceptions.ConnectionError:
@@ -45,6 +52,7 @@ with st.sidebar:
     st.divider()
     if st.button("Clear chat", use_container_width=True):
         st.session_state.history = []
+        st.session_state.session_id = str(uuid.uuid4())
         st.rerun()
 
 for question, answer in st.session_state.history:

@@ -55,11 +55,13 @@ def main():
     print(f"embedded {len(vectors)} vectors of {len(vectors[0])} dimensions")
 
     db = DB()
-    removed = db.delete(f"DELETE FROM {TABLE_NAME}")
-    written = db.insert(
-        f"INSERT INTO {TABLE_NAME} (content, embedding) VALUES (%s, %s)",
-        list(zip(chunks, vectors)),
-    )
+    removed, written = db.run_transaction([
+        (f"DELETE FROM {TABLE_NAME}", None),
+        (
+            f"INSERT INTO {TABLE_NAME} (content, embedding) VALUES (%s, %s)",
+            list(zip(chunks, vectors)),
+        ),
+    ])
     print(f"removed {removed} old rows, wrote {written} new rows")
 
     total = db.fetchone(f"SELECT count(*) AS n FROM {TABLE_NAME}")["n"]
